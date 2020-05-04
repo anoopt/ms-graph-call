@@ -11,12 +11,17 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 
 jobs:
-  one:
-    runs-on: ubuntu-16.04
+  create-event:
+    runs-on: ubuntu-latest
+    name: Create Event
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump info  
-        run: echo "${{ github.event.pull_request._links.html.href }}"
+    - name: Create Event
+      uses: anoopt/ms-graph-create-event@v1
+      env:
+        TENANT_NAME: ${{ secrets.TENANT_NAME }}
+        APP_ID: ${{ secrets.APP_ID }}
+        APP_SECRET: ${{ secrets.APP_SECRET }}
+      with:
+        subject: 'Review pull request'
+        body: 'A new PR has been submitted on ${{ github.repository }} from ${{ github.actor }}. Please review it <a href="${{ github.event.pull_request._links.html.href }}">here</a>.'
+        emailaddress: 'user@contoso.onmicrosoft.com'
