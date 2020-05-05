@@ -1,0 +1,29 @@
+# This workflow creates an event in the specified person's outlook calendar using Microsoft Graph.
+name: Create Event
+
+# Triggers the workflow on pull request event only for the master branch
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  create-event:
+    runs-on: ubuntu-latest
+    name: Create Event using Microsoft Graph 
+    steps:
+    
+    # Print a simple message
+    - name: Print a message
+      run: echo About to call a GitHub Action
+    
+    # Create an event by calling an action
+    - name: Create Event
+      uses: anoopt/ms-graph-create-event@v1
+      env:
+        TENANT_NAME: ${{ secrets.TENANT_NAME }}
+        APP_ID: ${{ secrets.APP_ID }}
+        APP_SECRET: ${{ secrets.APP_SECRET }}
+      with:
+        subject: 'Review pull request'
+        body: 'A new PR has been submitted on ${{ github.repository }} from ${{ github.actor }}. Please review it by clicking <a href="${{ github.event.pull_request._links.html.href }}">here</a>.'
+        emailaddress: 'anoop@anoopccdev1.onmicrosoft.com'
